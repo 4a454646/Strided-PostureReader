@@ -133,11 +133,11 @@ def get_pose3D(video_path, output_dir):
     model = Model(args).cuda()
 
     model_dict = model.state_dict()
-    model_paths = sorted(glob.glob(os.path.join(args.previous_dir, '*.pth')))
-    for path in model_paths:
-        if path.split('/')[-1][0] == 'n':
-            model_path = path
-
+    # model_paths = sorted(glob.glob(os.path.join(args.previous_dir, '*.pth')))
+    # for path in model_paths:
+    #     if path.split('/')[-1][0] == 'n':
+    #         model_path = path
+    model_path = "/home/jeff/StridedTransformer-Pose3D-main/demo/lib/checkpoint/no_refine_4365.pth"
     pre_dict = torch.load(model_path)
     for name, key in model_dict.items():
         model_dict[name] = pre_dict[name]
