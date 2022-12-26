@@ -4,8 +4,8 @@ class MocapDataset:
     def __init__(self, fps, skeleton):
         self._skeleton = skeleton
         self._fps = fps
-        self._data = None  
-        self._cameras = None  
+        self._data = None
+        self._cameras = None
 
     def remove_joints(self, joints_to_remove):
         kept_joints = self._skeleton.remove_joints(joints_to_remove)
@@ -31,5 +31,3 @@ class MocapDataset:
 
     def supports_semi_supervised(self):
         return False
-
-

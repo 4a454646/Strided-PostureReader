@@ -3,7 +3,8 @@ import numpy as np
 import hashlib
 from torch.autograd import Variable
 import os
-    
+
+
 def deterministic_random(min_value, max_value, data):
     digest = hashlib.sha256(data.encode()).digest()
     raw_value = int.from_bytes(digest[:4], byteorder='little', signed=False)
@@ -44,7 +45,7 @@ def mpjpe_by_action_p1(predicted, target, action, action_error_sum):
                 action_name = action[i]
 
             action_error_sum[action_name]['p1'].update(dist[i].item(), 1)
-            
+
     return action_error_sum
 
 
@@ -70,7 +71,7 @@ def mpjpe_by_action_p2(predicted, target, action, action_error_sum):
             else:
                 action_name = action[i]
             action_error_sum[action_name]['p2'].update(np.mean(dist), 1)
-            
+
     return action_error_sum
 
 
@@ -101,7 +102,7 @@ def p_mpjpe(predicted, target):
 
     tr = np.expand_dims(np.sum(s, axis=1, keepdims=True), axis=2)
 
-    a = tr * normX / normY 
+    a = tr * normX / normY
     t = muX - a * np.matmul(muY, R)
 
     predicted_aligned = a * np.matmul(predicted, R) + t
@@ -109,27 +110,27 @@ def p_mpjpe(predicted, target):
     return np.mean(np.linalg.norm(predicted_aligned - target, axis=len(target.shape) - 1), axis=len(target.shape) - 2)
 
 
-def define_actions( action ):
+def define_actions(action):
 
-  actions = ["Directions","Discussion","Eating","Greeting",
-           "Phoning","Photo","Posing","Purchases",
-           "Sitting","SittingDown","Smoking","Waiting",
-           "WalkDog","Walking","WalkTogether"]
+    actions = ["Directions", "Discussion", "Eating", "Greeting",
+               "Phoning", "Photo", "Posing", "Purchases",
+               "Sitting", "SittingDown", "Smoking", "Waiting",
+               "WalkDog", "Walking", "WalkTogether"]
 
-  if action == "All" or action == "all" or action == '*':
-    return actions
+    if action == "All" or action == "all" or action == '*':
+        return actions
 
-  if not action in actions:
-    raise( ValueError, "Unrecognized action: %s" % action )
+    if action not in actions:
+        raise (ValueError, "Unrecognized action: %s" % action)
 
-  return [action]
+    return [action]
 
 
 def define_error_list(actions):
     error_sum = {}
-    error_sum.update({actions[i]: 
-        {'p1':AccumLoss(), 'p2':AccumLoss()} 
-        for i in range(len(actions))})
+    error_sum.update({actions[i]:
+                      {'p1': AccumLoss(), 'p2': AccumLoss()}
+                      for i in range(len(actions))})
     return error_sum
 
 
@@ -145,7 +146,7 @@ class AccumLoss(object):
         self.sum += val
         self.count += n
         self.avg = self.sum / self.count
-        
+
 
 def get_varialbe(split, target):
     num = len(target)
@@ -170,11 +171,10 @@ def print_error(data_type, action_error_sum, is_train):
 
 def print_error_action(action_error_sum, is_train):
     mean_error_each = {'p1': 0.0, 'p2': 0.0}
-    mean_error_all  = {'p1': AccumLoss(), 'p2': AccumLoss()}
+    mean_error_all = {'p1': AccumLoss(), 'p2': AccumLoss()}
 
     if is_train == 0:
         print("{0:=^12} {1:=^10} {2:=^8}".format("Action", "p#1 mm", "p#2 mm"))
-
 
     for action, value in action_error_sum.items():
         if is_train == 0:
@@ -190,9 +190,9 @@ def print_error_action(action_error_sum, is_train):
             print("{0:>6.2f} {1:>10.2f}".format(mean_error_each['p1'], mean_error_each['p2']))
 
     if is_train == 0:
-        print("{0:<12} {1:>6.2f} {2:>10.2f}".format("Average", mean_error_all['p1'].avg, \
-                mean_error_all['p2'].avg))
-    
+        print("{0:<12} {1:>6.2f} {2:>10.2f}".format("Average", mean_error_all['p1'].avg,
+                                                    mean_error_all['p2'].avg))
+
     return mean_error_all['p1'].avg, mean_error_all['p2'].avg
 
 
@@ -203,15 +203,9 @@ def save_model(previous_name, save_dir, epoch, data_threshold, model, model_name
     torch.save(model.state_dict(),
                '%s/%s_%d_%d.pth' % (save_dir, model_name, epoch, data_threshold * 100))
     previous_name = '%s/%s_%d_%d.pth' % (save_dir, model_name, epoch, data_threshold * 100)
-    
+
     return previous_name
-    
+
 
 def save_model_epoch(save_dir, epoch, model):
     torch.save(model.state_dict(), '%s/epoch_%d.pth' % (save_dir, epoch))
-
-
-
-
-
-

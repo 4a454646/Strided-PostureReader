@@ -1,6 +1,9 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+from lib.sort.sort import Sort
+from lib.yolov3.human_detector import yolo_human_det as yolo_det
+from lib.yolov3.human_detector import load_model as yolo_model
 
 import sys
 import os
@@ -25,9 +28,6 @@ cfg_dir = 'demo/lib/hrnet/experiments/'
 model_dir = 'demo/lib/checkpoint/'
 
 # Loading human detector model
-from lib.yolov3.human_detector import load_model as yolo_model
-from lib.yolov3.human_detector import yolo_human_det as yolo_det
-from lib.sort.sort import Sort
 
 
 def parse_args():
@@ -80,7 +80,7 @@ def model_load(config):
     model.load_state_dict(new_state_dict)
     model.eval()
     # print('HRNet network successfully loaded')
-    
+
     return model
 
 
@@ -113,8 +113,8 @@ def gen_video_kpts(video, det_dim=416, num_peroson=1, gen_output=False):
             bboxs = bboxs_pre
             scores = scores_pre
         else:
-            bboxs_pre = copy.deepcopy(bboxs) 
-            scores_pre = copy.deepcopy(scores) 
+            bboxs_pre = copy.deepcopy(bboxs)
+            scores_pre = copy.deepcopy(scores)
 
         # Using Sort to track people
         people_track = people_sort.update(bboxs)

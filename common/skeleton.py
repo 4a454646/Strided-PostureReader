@@ -78,6 +78,3 @@ class Skeleton:
         for i, parent in enumerate(self._parents):
             if parent != -1:
                 self._children[parent].append(i)
-
-
-                

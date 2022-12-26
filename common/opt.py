@@ -4,6 +4,7 @@ import math
 import time
 import torch
 
+
 class opts():
     def __init__(self):
         self.parser = argparse.ArgumentParser()
@@ -35,7 +36,7 @@ class opts():
         self.parser.add_argument('--workers', type=int, default=8)
         self.parser.add_argument('-lrd', '--lr_decay', default=0.95, type=float)
         self.parser.add_argument('--frames', type=int, default=351)
-        self.parser.add_argument('--pad', type=int, default=175) 
+        self.parser.add_argument('--pad', type=int, default=175)
         self.parser.add_argument('--refine', action='store_true')
         self.parser.add_argument('--reload', action='store_true')
         self.parser.add_argument('--refine_reload', action='store_true')
@@ -46,7 +47,7 @@ class opts():
         self.parser.add_argument('--out_all', type=int, default=1)
         self.parser.add_argument('--in_channels', type=int, default=2)
         self.parser.add_argument('--out_channels', type=int, default=3)
-        self.parser.add_argument('-previous_best_threshold', type=float, default= math.inf)
+        self.parser.add_argument('-previous_best_threshold', type=float, default=math.inf)
         self.parser.add_argument('-previous_name', type=str, default='')
         self.parser.add_argument('-previous_refine_name', type=str, default='')
 
@@ -60,9 +61,9 @@ class opts():
         self.opt.pad = (self.opt.frames-1) // 2
 
         stride_num = {
-                '27':  [3, 3, 3],
-                '351': [3, 9, 13],
-            }
+            '27': [3, 3, 3],
+            '351': [3, 9, 13],
+        }
 
         if str(self.opt.frames) in stride_num:
             self.opt.stride_num = stride_num[str(self.opt.frames)]
@@ -77,15 +78,15 @@ class opts():
         if self.opt.train:
             logtime = time.strftime('%m%d_%H%M_%S_')
 
-            self.opt.checkpoint = 'checkpoint/' + logtime + '%d'%(self.opt.pad*2+1) + \
-                '%s'%('' if self.opt.refine else '_no')
+            self.opt.checkpoint = 'checkpoint/' + logtime + '%d' % (self.opt.pad*2+1) + \
+                '%s' % ('' if self.opt.refine else '_no')
 
             if not os.path.exists(self.opt.checkpoint):
                 os.makedirs(self.opt.checkpoint)
 
         if self.opt.train:
             args = dict((name, getattr(self.opt, name)) for name in dir(self.opt)
-                    if not name.startswith('_'))
+                        if not name.startswith('_'))
 
             file_name = os.path.join(self.opt.checkpoint, 'opt.txt')
             with open(file_name, 'wt') as opt_file:
@@ -93,11 +94,5 @@ class opts():
                 for k, v in sorted(args.items()):
                     opt_file.write('  %s: %s\n' % (str(k), str(v)))
                 opt_file.write('==> Args:\n')
-       
+
         return self.opt
-
-
-
-
-
-        

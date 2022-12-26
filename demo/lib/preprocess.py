@@ -33,7 +33,7 @@ def coco_h36m(keypoints):
     # keypoints_h36m[:, [5, 6]] = keypoints_h36m[:, [4, 4]]
 
     valid_frames = np.where(np.sum(keypoints_h36m.reshape(-1, 34), axis=1) != 0)[0]
-    
+
     return keypoints_h36m, valid_frames
 
 
@@ -101,5 +101,3 @@ def revise_kpts(h36m_kpts, h36m_scores, valid_frames):
         new_h36m_kpts[index, frames] = kpts
 
     return new_h36m_kpts
-
-
